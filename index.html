@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scheme Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&family=Noto+Sans+Tamil:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbf7ef;--card:#fff;--ink:#14202b;--mute:#5b6875;--line:#e6dfd0;--acc:#0b7a5e;--on:#fff;--sun:#e8890c;--g1:rgba(232,137,12,.22);--g2:rgba(11,122,94,.20);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:rgba(255,255,255,.07);--ink:#eef2f7;--mute:#9aa7b8;--line:rgba(255,255,255,.14);--acc:#34d399;--on:#04231b;--sun:#fbbf24;--g1:rgba(251,191,36,.18);--g2:rgba(52,211,153,.18)}}
+:root[data-theme="dark"]{--bg:#0b1220;--card:rgba(255,255,255,.07);--ink:#eef2f7;--mute:#9aa7b8;--line:rgba(255,255,255,.14);--acc:#34d399;--on:#04231b;--sun:#fbbf24;--g1:rgba(251,191,36,.18);--g2:rgba(52,211,153,.18)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:'Mukta','Noto Sans Tamil',system-ui,sans-serif;font-size:20px;line-height:1.5;
+background:radial-gradient(60% 40% at 0% 0%,var(--g1),transparent 70%),radial-gradient(60% 45% at 100% 100%,var(--g2),transparent 70%),var(--bg);background-attachment:fixed}
+main{max-width:620px;margin:0 auto;padding:18px 18px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:34px}
+.logo{font-weight:800;letter-spacing:-.01em}
+.lang{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{font:inherit;font-size:.9rem;font-weight:600;color:var(--mute);background:none;border:0;border-radius:999px;padding:5px 12px;min-height:36px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--acc);color:var(--on)}
+h1{font-size:clamp(2.2rem,9vw,3.6rem);line-height:1.08;font-weight:800;letter-spacing:-.02em;margin:0 0 14px;background:linear-gradient(100deg,var(--ink) 30%,var(--sun) 65%,var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mute);margin:0 0 20px}
+.cta{font:inherit;font-weight:800;font-size:1.15rem;background:var(--acc);color:var(--on);border:0;border-radius:16px;padding:16px 30px;min-height:56px;cursor:pointer;box-shadow:0 10px 30px -10px var(--acc);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+.cta:active{transform:scale(.97)}
+.priv{font-size:.85rem;color:var(--mute);margin-top:18px}
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.ghost{font:inherit;font-size:1.2rem;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;width:46px;height:46px;cursor:pointer}
+.track{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--sun),var(--acc));transition:width .35s}
+h2{font-size:clamp(1.6rem,6vw,2.2rem);line-height:1.2;margin:0 0 20px;font-weight:800}
+.chips{display:grid;gap:10px}
+.chips.two{grid-template-columns:1fr 1fr}
+.chip{display:flex;align-items:center;font:inherit;font-size:1.1rem;text-align:left;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 18px;min-height:68px;cursor:pointer;transition:transform .12s,border-color .12s;backdrop-filter:blur(8px)}
+.chips.two .chip{justify-content:center;text-align:center;min-height:84px}
+.chip:hover{border-color:var(--acc)}
+.chip:active{transform:scale(.97)}
+.chip[aria-pressed="true"]{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 16%,transparent);font-weight:600}
+.num{font:inherit;font-size:2.4rem;font-weight:800;width:100%;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 18px;margin-bottom:6px}
+.num:focus{border-color:var(--acc)}
+.num.bad{border-color:#e5484d}
+.err{color:#e5484d;font-size:.9rem;margin:0 0 6px;min-height:1.4em}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+#qbody .cta{margin-top:20px;width:100%}
+.fade{animation:in .3s ease-out both}
+@keyframes in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;backdrop-filter:blur(8px);animation:up .4s ease-out both}
+.card summary{display:flex;gap:14px;align-items:center;padding:16px;cursor:pointer;list-style:none}
+.card summary::-webkit-details-marker{display:none}
+.card summary::after{content:"+";margin-left:auto;font-size:1.6rem;color:var(--acc)}
+.card[open] summary::after{content:"\2212"}
+.card b{display:block;line-height:1.25}
+.card small{display:block;color:var(--mute);font-size:.9rem;line-height:1.35;margin-top:2px}
+.card p{margin:0;padding:0 16px 16px;font-size:.95rem}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.acts{display:grid;gap:10px;margin:22px 0}
+.wa{background:#25d366;color:#04230f;box-shadow:none}
+.alt{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.note{font-size:.85rem;color:var(--mute)}
+a{color:var(--acc)}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.say{display:inline-flex;align-items:center;justify-content:center;padding:0;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:50%;width:54px;height:54px;vertical-align:middle;margin-left:8px;cursor:pointer}
+.say svg{pointer-events:none}
+.big{display:grid;gap:12px}
+.big .cta{font-size:1.7rem;min-height:76px;width:100%}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div class="logo">Scheme Finder</div>
+<div class="lang" role="group" aria-label="Language">
+<button type="button" data-l="en" aria-pressed="true">EN</button>
+<button type="button" data-l="ta" aria-pressed="false">தமிழ்</button>
+<button type="button" data-l="hi" aria-pressed="false">हिन्दी</button></div></div>
+<p class="note" id="vmsg" hidden></p>
+<section id="hero">
+<h1 data-k="title"></h1>
+<p class="sub">Tap your language &middot; உங்கள் மொழியைத் தொடவும் &middot; अपनी भाषा चुनें</p>
+<p class="sub" data-k="sub"></p>
+<div class="big"><button class="cta" data-go="ta">தமிழ்</button><button class="cta" data-go="hi">हिन्दी</button><button class="cta" data-go="en">English</button></div>
+<p class="priv" data-k="priv"></p>
+</section>
+<section id="q" hidden>
+<div class="prog"><button class="ghost" id="back" aria-label="Back">&larr;</button><div class="track" role="progressbar"><i id="bar"></i></div></div>
+<div id="qbody"></div>
+</section>
+<section id="res" hidden aria-live="polite"></section>
+</main>
+<script>
+var LI={en:0,ta:1,hi:2},lang='en',last=null;
+var U={
+title:["Find the government schemes you can claim","நீங்கள் பெறக்கூடிய அரசு திட்டங்களைக் கண்டறியுங்கள்","अपने लिए सरकारी योजनाएँ खोजें"],
+sub:["Many families miss pensions, scholarships and insurance they already qualify for. Answer a few questions to see which schemes may apply to you.","பல குடும்பங்கள் தகுதி இருந்தும் ஓய்வூதியம், கல்வி உதவித்தொகை, காப்பீடு போன்றவற்றைப் பெறுவதில்லை. சில கேள்விகளுக்குப் பதிலளித்து உங்களுக்குப் பொருந்தும் திட்டங்களைப் பாருங்கள்.","कई परिवार पात्र होने पर भी पेंशन, छात्रवृत्ति और बीमा का लाभ नहीं ले पाते। कुछ सवालों के जवाब दें और जानें कि कौन सी योजनाएँ आपके लिए हैं।"],
+age:["Age","வயது","उम्र"],gender:["Gender","பாலினம்","लिंग"],
+o_f:["Female","பெண்","महिला"],o_m:["Male","ஆண்","पुरुष"],o_o:["Other","மற்றவை","अन्य"],
+occ:["What do you do?","நீங்கள் என்ன வேலை செய்கிறீர்கள்?","आप क्या काम करते हैं?"],
+o_farmer:["Farmer","விவசாயி","किसान"],o_worker:["Daily wage / unorganised worker","தினக்கூலி / அமைப்புசாரா தொழிலாளி","दिहाड़ी / असंगठित मज़दूर"],
+o_vendor:["Street vendor","தெருவோர வியாபாரி","रेहड़ी-पटरी विक्रेता"],o_biz:["Small business owner","சிறு தொழில் உரிமையாளர்","छोटा व्यवसायी"],
+o_student:["Student","மாணவர்","छात्र"],o_home:["Homemaker","இல்லத்தரசி","गृहिणी"],o_none:["Unemployed","வேலையில்லாதவர்","बेरोज़गार"],
+area:["Where do you live?","நீங்கள் எங்கு வசிக்கிறீர்கள்?","आप कहाँ रहते हैं?"],
+o_rural:["Village (rural)","கிராமம்","गाँव (ग्रामीण)"],o_urban:["Town / city (urban)","நகரம்","शहर (शहरी)"],
+inc:["Yearly family income","குடும்ப ஆண்டு வருமானம்","परिवार की वार्षिक आय"],
+o_i1:["Below ₹1 lakh","₹1 லட்சத்திற்குக் கீழ்","₹1 लाख से कम"],o_i2:["₹1 to 2.5 lakh","₹1 முதல் 2.5 லட்சம்","₹1 से 2.5 लाख"],
+o_i3:["₹2.5 to 8 lakh","₹2.5 முதல் 8 லட்சம்","₹2.5 से 8 लाख"],o_i4:["Above ₹8 lakh","₹8 லட்சத்திற்கு மேல்","₹8 लाख से अधिक"],
+cat:["Category","பிரிவு","श्रेणी"],o_gen:["General","பொது","सामान्य"],
+tick:["Tick all that apply","பொருந்துபவற்றைத் தேர்வு செய்யுங்கள்","जो लागू हो उन्हें चुनें"],
+ration:["I have a ration card","என்னிடம் ரேஷன் அட்டை உள்ளது","मेरे पास राशन कार्ड है"],
+disab:["I have a disability (40% or more)","எனக்கு மாற்றுத்திறன் உள்ளது (40% அல்லது அதற்கு மேல்)","मुझे विकलांगता है (40% या अधिक)"],
+preg:["Pregnant or recently gave birth","கர்ப்பிணி அல்லது சமீபத்தில் குழந்தை பெற்றவர்","गर्भवती या हाल ही में माँ बनी हैं"],
+girl:["I have a daughter under 10","எனக்கு 10 வயதுக்குட்பட்ட மகள் உள்ளார்","मेरी 10 साल से कम उम्र की बेटी है"],
+nobank:["I have no bank account","என்னிடம் வங்கிக் கணக்கு இல்லை","मेरा बैंक खाता नहीं है"],
+nohouse:["I do not have a pucca (concrete) house","என்னிடம் கான்கிரீட் (பக்கா) வீடு இல்லை","मेरे पास पक्का मकान नहीं है"],
+mino:["I belong to a minority community","நான் சிறுபான்மை சமூகத்தைச் சேர்ந்தவன்/ள்","मैं अल्पसंख्यक समुदाय से हूँ"],
+btn:["Show my schemes","என் திட்டங்களைக் காட்டு","मेरी योजनाएँ दिखाएँ"],
+resn:["{n} schemes may apply to you","{n} திட்டங்கள் உங்களுக்குப் பொருந்தலாம்","{n} योजनाएँ आपके लिए हो सकती हैं"],
+res0:["No matches found","பொருத்தமான திட்டங்கள் இல்லை","कोई योजना नहीं मिली"],
+carry:["Take your Aadhaar, income certificate and bank passbook when you apply.","விண்ணப்பிக்கும்போது ஆதார், வருமானச் சான்றிதழ், வங்கிப் புத்தகத்தை எடுத்துச் செல்லுங்கள்.","आवेदन करते समय आधार, आय प्रमाण पत्र और बैंक पासबुक साथ ले जाएँ।"],
+try0:["Try changing your answers, or search on myscheme.gov.in.","பதில்களை மாற்றிப் பாருங்கள் அல்லது myscheme.gov.in இல் தேடுங்கள்.","अपने जवाब बदलकर देखें या myscheme.gov.in पर खोजें।"],
+how:["How to apply:","எப்படி விண்ணப்பிப்பது:","आवेदन कैसे करें:"],
+note:["This is a guide, not an official decision. Rules and amounts differ by state. Confirm on myscheme.gov.in or at your nearest Common Service Centre before applying.","இது வழிகாட்டி மட்டுமே, அதிகாரப்பூர்வ முடிவு அல்ல. விதிகளும் தொகைகளும் மாநிலத்திற்கு மாநிலம் மாறும். விண்ணப்பிக்கும் முன் myscheme.gov.in அல்லது அருகிலுள்ள பொது சேவை மையத்தில் உறுதிசெய்யுங்கள்.","यह केवल मार्गदर्शन है, आधिकारिक निर्णय नहीं। नियम और राशि राज्य के अनुसार बदलती हैं। आवेदन से पहले myscheme.gov.in या नज़दीकी जन सेवा केंद्र पर पुष्टि करें।"],
+agemsg:["Enter an age between 0 and 110.","0 முதல் 110 வரை வயதை உள்ளிடுங்கள்.","0 से 110 के बीच उम्र लिखें।"]
+};
+// each scheme: [en name, benefit, how, ta name, benefit, how, hi name, benefit, how]
+var D={
+jan:["PM Jan Dhan Yojana","Zero-balance bank account with RuPay card and accident cover.","Visit any bank branch with Aadhaar.","பிரதமர் ஜன்தன் யோஜனா","குறைந்தபட்ச இருப்பு தேவையில்லாத வங்கிக் கணக்கு, ரூபே கார்டு மற்றும் விபத்துக் காப்பீடு.","ஆதாருடன் ஏதாவது ஒரு வங்கிக் கிளைக்குச் செல்லுங்கள்.","प्रधानमंत्री जन धन योजना","शून्य बैलेंस बैंक खाता, रुपे कार्ड और दुर्घटना बीमा।","आधार लेकर किसी भी बैंक शाखा में जाएँ।"],
+kisan:["PM-KISAN","₹6,000 per year in 3 instalments in your bank account.","Register at pmkisan.gov.in or a Common Service Centre. Farmland in your name is needed.","பி.எம்-கிசான்","ஆண்டுக்கு ₹6,000, 3 தவணைகளில் வங்கிக் கணக்கில் செலுத்தப்படும்.","pmkisan.gov.in அல்லது பொது சேவை மையத்தில் பதிவு செய்யுங்கள். உங்கள் பெயரில் நிலம் வேண்டும்.","पीएम-किसान","सालाना ₹6,000, तीन किस्तों में बैंक खाते में।","pmkisan.gov.in या जन सेवा केंद्र पर पंजीकरण करें। ज़मीन आपके नाम होनी चाहिए।"],
+ab:["Ayushman Bharat (PM-JAY)","Free hospital treatment up to ₹5 lakh per family per year.","Check your name at a Common Service Centre or hospital. Age 70+ is covered regardless of income.","ஆயுஷ்மான் பாரத் (PM-JAY)","குடும்பத்திற்கு ஆண்டுக்கு ₹5 லட்சம் வரை இலவச மருத்துவமனை சிகிச்சை.","பொது சேவை மையம் அல்லது மருத்துவமனையில் உங்கள் பெயரைச் சரிபார்க்கவும். 70+ வயதினருக்கு வருமான வரம்பு இல்லை.","आयुष्मान भारत (PM-JAY)","प्रति परिवार प्रति वर्ष ₹5 लाख तक मुफ़्त अस्पताल इलाज।","जन सेवा केंद्र या अस्पताल में अपना नाम जाँचें। 70+ उम्र वालों के लिए आय सीमा नहीं।"],
+ration:["Free ration (PM Garib Kalyan Anna Yojana)","Free grain every month for ration card holders.","Collect at your ration shop. No card? Apply at the state food department.","இலவச ரேஷன் (பி.எம் கரீப் கல்யாண் அன்ன யோஜனா)","ரேஷன் அட்டைதாரர்களுக்கு மாதந்தோறும் இலவச தானியம்.","ரேஷன் கடையில் பெறலாம். அட்டை இல்லையெனில் மாநில உணவுத் துறையில் விண்ணப்பியுங்கள்.","मुफ़्त राशन (पीएम गरीब कल्याण अन्न योजना)","राशन कार्ड धारकों को हर महीने मुफ़्त अनाज।","राशन दुकान से लें। कार्ड नहीं है तो राज्य खाद्य विभाग में आवेदन करें।"],
+mgn:["MGNREGA","Up to 100 days of paid work per year for rural households.","Ask your Gram Panchayat for a job card.","மகாத்மா காந்தி ஊரக வேலை உறுதித் திட்டம்","கிராமப்புறக் குடும்பங்களுக்கு ஆண்டுக்கு 100 நாள் வரை ஊதிய வேலை.","உங்கள் கிராம ஊராட்சியில் வேலை அட்டை கேளுங்கள்.","मनरेगा","ग्रामीण परिवारों को साल में 100 दिन तक वेतन वाला काम।","ग्राम पंचायत से जॉब कार्ड माँगें।"],
+awas:["PM Awas Yojana","Money to build or buy a pucca house.","Apply via Gram Panchayat (rural) or Urban Local Body (urban).","பிரதமர் ஆவாஸ் யோஜனா","கான்கிரீட் வீடு கட்ட அல்லது வாங்க நிதியுதவி.","கிராம ஊராட்சி (கிராமம்) அல்லது நகர்ப்புற உள்ளாட்சி (நகரம்) மூலம் விண்ணப்பியுங்கள்.","प्रधानमंत्री आवास योजना","पक्का घर बनाने या खरीदने के लिए आर्थिक सहायता।","ग्राम पंचायत (ग्रामीण) या नगर निकाय (शहरी) से आवेदन करें।"],
+ujj:["PM Ujjwala Yojana","Free LPG connection for women in low-income households.","Apply at a nearby LPG distributor.","பிரதமர் உஜ்வலா யோஜனா","குறைந்த வருமானக் குடும்பப் பெண்களுக்கு இலவச எரிவாயு இணைப்பு.","அருகிலுள்ள எரிவாயு விநியோகஸ்தரிடம் விண்ணப்பியுங்கள்.","प्रधानमंत्री उज्ज्वला योजना","कम आय वाले परिवारों की महिलाओं को मुफ़्त एलपीजी कनेक्शन।","नज़दीकी एलपीजी वितरक के पास आवेदन करें।"],
+ssy:["Sukanya Samriddhi Yojana","High-interest savings account for a girl's education and marriage.","Open at a post office or bank before she turns 10.","செல்வமகள் சேமிப்புத் திட்டம்","பெண் குழந்தையின் கல்வி, திருமணத்திற்கான அதிக வட்டி சேமிப்புக் கணக்கு.","10 வயதுக்குள் தபால் நிலையம் அல்லது வங்கியில் தொடங்குங்கள்.","सुकन्या समृद्धि योजना","बेटी की पढ़ाई और शादी के लिए ऊँची ब्याज दर वाला बचत खाता।","10 साल की उम्र से पहले डाकघर या बैंक में खोलें।"],
+mv:["PM Matru Vandana Yojana","₹5,000 in instalments for a pregnant woman's first living child.","Register at your Anganwadi or health centre.","பிரதமர் மாத்ரு வந்தனா யோஜனா","முதல் குழந்தைக்காக கர்ப்பிணிக்குத் தவணைகளில் ₹5,000.","அங்கன்வாடி அல்லது சுகாதார மையத்தில் பதிவு செய்யுங்கள்.","प्रधानमंत्री मातृ वंदना योजना","पहले जीवित बच्चे के लिए गर्भवती महिला को किस्तों में ₹5,000।","आंगनवाड़ी या स्वास्थ्य केंद्र में पंजीकरण करें।"],
+sby:["PM Suraksha Bima Yojana","₹2 lakh accident insurance for about ₹20 a year.","Enrol through your bank. Ages 18 to 70.","பிரதமர் சுரக்ஷா பீமா யோஜனா","ஆண்டுக்கு சுமார் ₹20 செலுத்தி ₹2 லட்சம் விபத்துக் காப்பீடு.","உங்கள் வங்கி மூலம் சேருங்கள். வயது 18 முதல் 70.","प्रधानमंत्री सुरक्षा बीमा योजना","लगभग ₹20 सालाना में ₹2 लाख का दुर्घटना बीमा।","अपने बैंक से जुड़ें। उम्र 18 से 70 वर्ष।"],
+jjb:["PM Jeevan Jyoti Bima Yojana","₹2 lakh life insurance for about ₹436 a year.","Enrol through your bank. Ages 18 to 50.","பிரதமர் ஜீவன் ஜோதி பீமா யோஜனா","ஆண்டுக்கு சுமார் ₹436 செலுத்தி ₹2 லட்சம் ஆயுள் காப்பீடு.","உங்கள் வங்கி மூலம் சேருங்கள். வயது 18 முதல் 50.","प्रधानमंत्री जीवन ज्योति बीमा योजना","लगभग ₹436 सालाना में ₹2 लाख का जीवन बीमा।","अपने बैंक से जुड़ें। उम्र 18 से 50 वर्ष।"],
+apy:["Atal Pension Yojana","Fixed monthly pension of ₹1,000 to ₹5,000 after age 60.","Open through your bank. Ages 18 to 40.","அடல் பென்ஷன் யோஜனா","60 வயதுக்குப் பிறகு மாதம் ₹1,000 முதல் ₹5,000 வரை உறுதியான ஓய்வூதியம்.","உங்கள் வங்கி மூலம் தொடங்குங்கள். வயது 18 முதல் 40.","अटल पेंशन योजना","60 साल के बाद हर महीने ₹1,000 से ₹5,000 की तय पेंशन।","अपने बैंक से खाता खोलें। उम्र 18 से 40 वर्ष।"],
+esh:["e-Shram card","Registration for unorganised workers with accident insurance and future benefits.","Register free at eshram.gov.in or a Common Service Centre.","இ-ஷ்ரம் அட்டை","அமைப்புசாரா தொழிலாளர்களுக்கான பதிவு, விபத்துக் காப்பீடு மற்றும் எதிர்கால நலன்கள்.","eshram.gov.in அல்லது பொது சேவை மையத்தில் இலவசமாகப் பதிவு செய்யுங்கள்.","ई-श्रम कार्ड","असंगठित मज़दूरों के लिए पंजीकरण, दुर्घटना बीमा और भविष्य के लाभ।","eshram.gov.in या जन सेवा केंद्र पर मुफ़्त पंजीकरण करें।"],
+svan:["PM SVANidhi","Low-interest loan from ₹10,000 for street vendors.","Apply at pmsvanidhi.mohua.gov.in or through your municipality.","பிரதமர் ஸ்வநிதி","தெருவோர வியாபாரிகளுக்கு ₹10,000 முதல் குறைந்த வட்டிக் கடன்.","pmsvanidhi.mohua.gov.in அல்லது உங்கள் நகராட்சி மூலம் விண்ணப்பியுங்கள்.","पीएम स्वनिधि","रेहड़ी-पटरी वालों के लिए ₹10,000 से कम ब्याज पर कर्ज़।","pmsvanidhi.mohua.gov.in या अपनी नगरपालिका से आवेदन करें।"],
+mud:["PM Mudra Yojana","Loans up to ₹10 lakh for small businesses, no collateral.","Apply at any bank or mudra.org.in.","பிரதமர் முத்ரா யோஜனா","சிறு தொழில்களுக்கு அடமானம் இல்லாமல் ₹10 லட்சம் வரை கடன்.","ஏதாவது ஒரு வங்கி அல்லது mudra.org.in இல் விண்ணப்பியுங்கள்.","प्रधानमंत्री मुद्रा योजना","छोटे व्यवसायों के लिए बिना गारंटी ₹10 लाख तक का कर्ज़।","किसी भी बैंक या mudra.org.in पर आवेदन करें।"],
+nsp:["National Scholarship Portal","Scholarships for SC, ST, OBC and minority students.","Apply on scholarships.gov.in. Income limits vary.","தேசிய கல்வி உதவித்தொகை தளம்","SC, ST, OBC மற்றும் சிறுபான்மை மாணவர்களுக்கு கல்வி உதவித்தொகை.","scholarships.gov.in இல் விண்ணப்பியுங்கள். வருமான வரம்பு மாறுபடும்.","राष्ट्रीय छात्रवृत्ति पोर्टल","SC, ST, OBC और अल्पसंख्यक छात्रों के लिए छात्रवृत्ति।","scholarships.gov.in पर आवेदन करें। आय सीमा अलग-अलग है।"],
+oap:["Old age pension (NSAP)","Monthly pension for elderly people from poor households. States often add more.","Apply at your Panchayat or Taluk office.","முதியோர் ஓய்வூதியம் (NSAP)","ஏழைக் குடும்ப முதியோருக்கு மாதாந்திர ஓய்வூதியம். மாநிலங்கள் கூடுதலாக வழங்குவதுண்டு.","உங்கள் ஊராட்சி அல்லது வட்டாட்சியர் அலுவலகத்தில் விண்ணப்பியுங்கள்.","वृद्धावस्था पेंशन (NSAP)","गरीब परिवारों के बुज़ुर्गों को मासिक पेंशन। राज्य अक्सर और जोड़ते हैं।","अपनी पंचायत या तहसील कार्यालय में आवेदन करें।"],
+dis:["Disability pension and UDID card","Monthly pension for severe disability, plus a national disability ID.","Get UDID at swavlambancard.gov.in, then apply for the pension at the district office.","மாற்றுத்திறனாளி ஓய்வூதியம் மற்றும் UDID அட்டை","கடுமையான மாற்றுத்திறனுக்கு மாதாந்திர ஓய்வூதியம், தேசிய அடையாள அட்டை.","swavlambancard.gov.in இல் UDID பெற்று, மாவட்ட அலுவலகத்தில் ஓய்வூதியத்திற்கு விண்ணப்பியுங்கள்.","दिव्यांग पेंशन और UDID कार्ड","गंभीर विकलांगता के लिए मासिक पेंशन और राष्ट्रीय पहचान पत्र।","swavlambancard.gov.in पर UDID बनवाएँ, फिर ज़िला कार्यालय में पेंशन के लिए आवेदन करें।"]
+};
+var R=[
+["jan",p=>p.nobank],["kisan",p=>p.occ=="farmer"],["ab",p=>p.inc<=2||p.age>=70],["ration",p=>p.ration||p.inc<=2],
+["mgn",p=>p.area=="rural"&&p.age>=18],["awas",p=>p.nohouse&&p.inc<=3],["ujj",p=>p.gender=="f"&&p.age>=18&&p.inc<=2],
+["ssy",p=>p.girl],["mv",p=>p.preg&&p.gender=="f"],["sby",p=>p.age>=18&&p.age<=70],["jjb",p=>p.age>=18&&p.age<=50],
+["apy",p=>p.age>=18&&p.age<=40],["esh",p=>(p.occ=="worker"||p.occ=="vendor"||p.occ=="farmer")&&p.age>=16&&p.age<=59],
+["svan",p=>p.occ=="vendor"],["mud",p=>p.occ=="biz"||p.occ=="vendor"],
+["nsp",p=>p.occ=="student"&&(p.cat!="gen"||p.mino)&&p.inc<=3],["oap",p=>p.age>=60&&p.inc<=2],["dis",p=>p.disab]
+];
+var g=function(id){return document.getElementById(id)};
+var esc=function(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML};
+Object.assign(U,{
+priv:["Your answers stay on your phone. Nothing is sent anywhere.","உங்கள் பதில்கள் உங்கள் தொலைபேசியிலேயே இருக்கும். எதுவும் அனுப்பப்படாது.","आपके जवाब आपके फ़ोन में ही रहते हैं। कुछ भी कहीं नहीं भेजा जाता।"],
+next:["Next","அடுத்து","आगे"],
+share:["Share on WhatsApp","WhatsApp இல் பகிர்","WhatsApp पर शेयर करें"],
+copy:["Copy result","நகலெடு","कॉपी करें"],
+copied:["Copied!","நகலெடுக்கப்பட்டது!","कॉपी हो गया!"],
+again:["Start again","மீண்டும் தொடங்கு","फिर से शुरू करें"]});
+var SPK='<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+var ST=[
+{k:'age',t:'num'},
+{k:'gender',t:'one',f:'gender',o:[['f','o_f'],['m','o_m'],['o','o_o']]},
+{k:'occ',t:'one',f:'occ',o:[['farmer','o_farmer'],['worker','o_worker'],['vendor','o_vendor'],['biz','o_biz'],['student','o_student'],['home','o_home'],['none','o_none'],['other','o_o']]},
+{k:'area',t:'one',f:'area',two:1,o:[['rural','o_rural'],['urban','o_urban']]},
+{k:'inc',t:'one',f:'inc',two:1,o:[[1,'o_i1'],[2,'o_i2'],[3,'o_i3'],[4,'o_i4']]},
+{k:'cat',t:'one',f:'cat',two:1,o:[['gen','o_gen'],['obc','OBC'],['sc','SC'],['st','ST']]},
+{k:'tick',t:'multi',o:['ration','disab','preg','girl','nobank','nohouse','mino']}];
+var A={},step=0,view='hero';
+var VO=[];
+function loadV(){try{VO=speechSynthesis.getVoices()}catch(e){}}
+loadV();try{speechSynthesis.onvoiceschanged=loadV}catch(e){}
+var VMSG={ta:"இந்த தொலைபேசியில் தமிழ் குரல் இல்லை. Settings > Text-to-speech இல் தமிழ் குரலை நிறுவுங்கள்.",hi:"इस फ़ोन में हिन्दी आवाज़ नहीं है। Settings > Text-to-speech में हिन्दी आवाज़ जोड़ें।"};
+function pickV(){var c=lang,m=VO.filter(function(v){return v.lang.toLowerCase().replace('_','-').indexOf(c)==0});
+  return m.filter(function(v){return /-in$/i.test(v.lang.replace('_','-'))})[0]||m[0]||null}
+function say(t){try{
+  speechSynthesis.cancel();loadV();
+  var v=pickV(),code={en:'en-IN',ta:'ta-IN',hi:'hi-IN'}[lang],vm=g('vmsg');
+  if(!v&&lang!='en'&&VO.length){vm.textContent=VMSG[lang];vm.hidden=false}else vm.hidden=true;
+  t=t.replace(/–/g,{en:' to ',ta:' முதல் ',hi:' से '}[lang]).replace(/₹/g,{en:'rupees ',ta:'ரூபாய் ',hi:'रुपये '}[lang]);
+  setTimeout(function(){t.split('. ').filter(Boolean).forEach(function(x){
+    var u=new SpeechSynthesisUtterance(x);u.lang=code;if(v)u.voice=v;u.rate=.9;speechSynthesis.speak(u)})},80);
+}catch(e){}}
+function qText(){var s=ST[step];if(s.t=='num')return T(s.k);return T(s.k)+'. '+s.o.map(function(o){return s.t=='one'?T(o[1]):T(o)}).join('. ')}
+function resText(full){var i=LI[lang],m=R.filter(function(r){return r[1](A)});if(!m.length)return T('res0');
+  return T('resn').replace('{n}',m.length)+'. '+m.map(function(r){var d=D[r[0]],o=i*3;return d[o]+(full?'. '+d[o+1]+'. '+d[o+2]:'')}).join('. ')}
+var T=function(k){return U[k]?U[k][LI[lang]]:k};
+function show(v){view=v;['hero','q','res'].forEach(function(id){g(id).hidden=id!=v});window.scrollTo(0,0)}
+function drawQ(){
+  var s=ST[step],h='<div class="fade"><h2>'+T(s.k)+'<button class="say" id="say" aria-label="Listen">'+SPK+'</button></h2>';
+  g('bar').style.width=((step+1)/ST.length*100)+'%';
+  if(s.t=='num')h+='<input class="num" id="age" type="number" inputmode="numeric" min="0" max="110" autocomplete="off" value="'+(A.age==null?'':A.age)+'" aria-label="'+T('age')+'"><p class="err" id="err" role="alert"></p><button class="cta" id="nx">'+T('next')+'</button>';
+  else{
+    h+='<div class="chips'+(s.two?' two':'')+'">';
+    s.o.forEach(function(o,i){
+      var on=s.t=='one'?A[s.f]===o[0]:!!A[o];
+      h+='<button class="chip" data-i="'+i+'" aria-pressed="'+on+'">'+(s.t=='one'?T(o[1]):T(o))+'</button>'});
+    h+='</div>';
+    if(s.t=='multi')h+='<button class="cta" id="nx">'+T('btn')+'</button>';
+  }
+  g('qbody').innerHTML=h+'</div>';
+  try{speechSynthesis.cancel()}catch(e){}
+  if(s.t=='num')g('age').focus();
+}
+function adv(){step++;if(step>=ST.length){show('res');drawRes();try{speechSynthesis.cancel()}catch(e){}}else drawQ()}
+function nx(){
+  var s=ST[step];
+  if(s.t=='num'){var i=g('age'),v=i.value.trim();
+    if(v===''||isNaN(+v)||+v<0||+v>110){i.classList.add('bad');g('err').textContent=T('agemsg');i.focus();return}
+    A.age=Math.floor(+v)}
+  adv();
+}
+function shareText(){
+  var i=LI[lang],n=R.filter(function(r){return r[1](A)}).map(function(r){return D[r[0]][i*3]});
+  return T('resn').replace('{n}',n.length)+': '+n.join(', ')+'\n'+location.href;
+}
+function copyText(t,done){
+  var fb=function(){var x=document.createElement('textarea');x.value=t;x.style.position='fixed';x.style.opacity='0';document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(x);done()};
+  try{navigator.clipboard.writeText(t).then(done,fb)}catch(e){fb()}
+}
+function drawRes(){
+  var i=LI[lang],m=R.filter(function(r){return r[1](A)});
+  var h='<div class="fade"><h2>'+(m.length?T('resn').replace('{n}',m.length):T('res0'))+'<button class="say" id="sayres" aria-label="Listen">'+SPK+'</button></h2>';
+  h+='<p class="sub">'+(m.length?T('carry'):T('try0'))+'</p>';
+  m.forEach(function(r,n){var d=D[r[0]],o=i*3;
+    h+='<details class="card" open style="animation-delay:'+(n*60)+'ms"><summary><span><b>'+esc(d[o])+'</b><small>'+esc(d[o+1])+'</small></span></summary><p><strong>'+T('how')+'</strong> '+esc(d[o+2])+'</p></details>'});
+  h+='<div class="acts">';
+  if(m.length)h+='<a class="cta wa" id="wa" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none" href="https://wa.me/?text='+encodeURIComponent(shareText())+'">'+T('share')+'</a><button class="cta alt" id="cp">'+T('copy')+'</button>';
+  h+='<button class="cta alt" id="again">'+T('again')+'</button></div>';
+  h+='<p class="note">'+T('note')+' <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener">myscheme.gov.in</a></p></div>';
+  g('res').innerHTML=h;
+}
+function render(){if(view=='q')drawQ();else if(view=='res')drawRes()}
+function setLang(l,auto){
+  lang=l;var i=LI[l];document.documentElement.lang=l;
+  document.querySelectorAll('[data-k]').forEach(function(e){e.textContent=U[e.dataset.k][i]});
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l==l)});
+  if(!auto)try{localStorage.setItem('lang',l)}catch(e){}
+  render();
+}
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l)}});
+document.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){setLang(b.dataset.go);A={};step=0;show('q');drawQ()}});
+g('back').onclick=function(){if(step>0){step--;drawQ()}else show('hero')};
+g('qbody').addEventListener('click',function(e){
+  if(e.target.closest('#say')){say(qText());return}
+  var c=e.target.closest('.chip'),s=ST[step];
+  if(c){var o=s.o[+c.dataset.i];
+    if(s.t=='one'){A[s.f]=o[0];c.setAttribute('aria-pressed','true');setTimeout(adv,170)}
+    else{A[o]=!A[o];c.setAttribute('aria-pressed',!!A[o])}return}
+  if(e.target.id=='nx')nx();
+});
+g('qbody').addEventListener('input',function(e){if(e.target.id=='age'){e.target.classList.remove('bad');g('err').textContent=''}});
+g('qbody').addEventListener('keydown',function(e){if(e.key=='Enter'&&e.target.id=='age')nx()});
+g('res').addEventListener('click',function(e){
+  if(e.target.closest('#sayres'))say(resText(true));
+  if(e.target.id=='again'){A={};step=0;show('hero')}
+  if(e.target.id=='cp'){var b=e.target;copyText(shareText(),function(){b.textContent=T('copied');setTimeout(function(){b.textContent=T('copy')},1600)})}
+});
+var saved=null;try{saved=localStorage.getItem('lang')}catch(e){}
+function detect(){var a=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en'];
+  for(var i=0;i<a.length;i++){var c=String(a[i]).toLowerCase().slice(0,2);if(LI[c]!==undefined)return c}return 'en'}
+if(LI[saved]!==undefined)setLang(saved);else setLang(detect(),true);
+</script>
+</body>
+</html>
